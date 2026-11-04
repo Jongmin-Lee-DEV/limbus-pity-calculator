@@ -4,7 +4,7 @@ Limbus Company 특정 추출에서 **가진 광기·추출권·이상성으로 �
 
 🔗 **바로 써 보기**: https://jongmin-lee-dev.github.io/limbus-pity-calculator/
 
-<!-- ![계산기 화면](docs/screenshot.png) -->
+![계산기 화면](docs/screenshot.png)
 
 ## 만든 이유
 

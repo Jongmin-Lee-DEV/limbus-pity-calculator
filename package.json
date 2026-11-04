@@ -1,0 +1,10 @@
+{
+  "name": "limbus-pity-calculator",
+  "version": "1.0.0",
+  "description": "림버스 컴퍼니 특정 추출 천장 확률 계산기",
+  "private": true,
+  "scripts": {
+    "test": "node --test"
+  },
+  "license": "MIT"
+}

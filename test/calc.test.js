@@ -35,9 +35,10 @@ test('검증값과 일치 (인격 4 + E.G.O 1)', () => {
   close(successProb(notAll, 200, 0), 0.264, 0.0005, '기존 5개 남음, 200연');
   close(successProb(notAll, 400, 0), 0.946, 0.0005, '기존 5개 남음, 400연');
   close(successProb(notAll, 600, 0), 0.9998, 0.00005, '기존 5개 남음, 600연');
-  const all = solve({ N: 4, k: 4, EN: 1, ek: 1, M: 0, maxN: 400 });
+  const all = solve({ N: 4, k: 4, EN: 1, ek: 1, M: 0, maxN: 600 });
   close(successProb(all, 200, 0), 0.329, 0.0005, '올컬렉, 200연');
   close(successProb(all, 400, 0), 0.962, 0.0005, '올컬렉, 400연');
+  close(successProb(all, 600, 0), 0.9999, 0.00005, '올컬렉, 600연');
 });
 
 test('닫힌 식과 일치 (E.G.O 올컬렉, 천장 전)', () => {

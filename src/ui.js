@@ -195,7 +195,7 @@
     const label = (e) => {
       if (e.type === 'id') return { cls: e.dup ? 'dup' : (e.index < k ? 'id' : 'old'), txt: (e.index < k ? idName(e.index) : `다른 픽업 인격 ${LET[e.index]}`) + (e.dup ? ' (중복)' : '') };
       if (e.type === 'ego') return { cls: e.index < ek ? 'ego' : 'old', txt: e.index < ek ? egoName(e.index) : `다른 픽업 E.G.O ${ELET[e.index]}` };
-      return { cls: 'old', txt: `기존 E.G.O (남은 ${e.index})` };
+      return { cls: 'old', txt: `기존 E.G.O (${e.index}개 남음)` };
     };
     const missing = [...r.missingIds.map(idName), ...r.missingEgos.map(egoName)];
     const used = missing.slice(0, r.pity), still = missing.slice(r.pity);

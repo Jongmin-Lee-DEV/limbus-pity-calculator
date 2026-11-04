@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="림버스 컴퍼니 특정 추출에서 목표한 픽업 인격과 E.G.O를 천장 안에 전부 얻을 확률을 정확 계산합니다.">
+<title>림버스 천장 계산기</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Noto+Serif+KR:wght@700;900&display=swap">
+<link rel="stylesheet" href="src/style.css">
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="eyebrow">Limbus Company · 특정 추출</span>
+    <h1>림버스 천장 계산기</h1>
+    <p>가진 광기와 이상성으로 목표한 픽업 인격과 E.G.O를 전부 얻을 확률을 정확 계산해요. 이상성은 마지막에 남은 것에 몰아서 쓴다고 가정하고, 입력값은 이 브라우저에 저장돼요.</p>
+  </header>
+
+  <div class="grid">
+    <form class="panel" id="form" autocomplete="off">
+      <fieldset>
+        <legend>재화</legend>
+        <div class="field">
+          <label for="lunacy">광기</label>
+          <input type="number" id="lunacy" min="0" step="130" value="26000">
+          <div class="quick" role="group" aria-label="광기 빠르게 바꾸기">
+            <button type="button" data-add="-1300">−10연</button>
+            <button type="button" data-add="1300">+10연</button>
+            <button type="button" data-add="6500">+50연</button>
+            <button type="button" data-set="26000">200연</button>
+            <button type="button" data-set="52000">400연</button>
+          </div>
+          <span class="hint" id="lunaHint">1회 130 광기 · 10연 1,300 광기</span>
+        </div>
+        <div class="row2">
+          <div class="field"><label for="tickets">추출권</label><input type="number" id="tickets" min="0" value="0"></div>
+          <div class="field"><label for="ideal">현재 이상성</label><input type="number" id="ideal" min="0" value="0"></div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>픽업 인격</legend>
+        <div class="row2">
+          <div class="field">
+            <span class="qlabel" id="q-n">픽업 인격 수</span>
+            <div class="stepper" role="group" aria-labelledby="q-n"><button type="button" id="nDown" aria-label="픽업 인격 줄이기">−</button><output id="nOut">3</output><button type="button" id="nUp" aria-label="픽업 인격 늘리기">+</button></div>
+          </div>
+          <div class="field">
+            <span class="qlabel" id="q-k">목표 인격 수</span>
+            <div class="stepper" role="group" aria-labelledby="q-k"><button type="button" id="kDown" aria-label="목표 인격 줄이기">−</button><output id="kOut">3</output><button type="button" id="kUp" aria-label="목표 인격 늘리기">+</button></div>
+          </div>
+        </div>
+        <div class="names" id="idNames" aria-label="목표 인격 이름"></div>
+        <div class="summary-line" id="rateLine"></div>
+      </fieldset>
+
+      <fieldset>
+        <legend>E.G.O</legend>
+        <div class="row2">
+          <div class="field">
+            <span class="qlabel" id="q-en">픽업 E.G.O 수</span>
+            <div class="stepper" role="group" aria-labelledby="q-en"><button type="button" id="enDown" aria-label="픽업 E.G.O 줄이기">−</button><output id="enOut">1</output><button type="button" id="enUp" aria-label="픽업 E.G.O 늘리기">+</button></div>
+          </div>
+          <div class="field">
+            <span class="qlabel" id="q-ek">목표 E.G.O 수</span>
+            <div class="stepper" role="group" aria-labelledby="q-ek"><button type="button" id="ekDown" aria-label="목표 E.G.O 줄이기">−</button><output id="ekOut">1</output><button type="button" id="ekUp" aria-label="목표 E.G.O 늘리기">+</button></div>
+          </div>
+        </div>
+        <div class="names" id="egoNames" aria-label="목표 E.G.O 이름"></div>
+        <span class="hint">픽업 E.G.O가 여러 개면 픽업 몫(0.65% 또는 1.3%)을 아직 없는 픽업 E.G.O끼리 나눠요.</span>
+        <div class="field">
+          <span class="qlabel" id="q-all">추출로 나오는 기존 E.G.O를 전부 가졌나요?</span>
+          <div class="seg" role="group" aria-labelledby="q-all" id="allc">
+            <button type="button" data-v="1" aria-pressed="false">올컬렉</button>
+            <button type="button" data-v="0" aria-pressed="true">아직 남음</button>
+          </div>
+          <span class="hint">아직 남아 있으면 E.G.O 1.3% 중 절반이 기존 E.G.O로 새요.</span>
+        </div>
+        <div class="field" id="missField">
+          <label for="miss">못 가진 기존 E.G.O 개수</label>
+          <input type="number" id="miss" min="1" max="60" value="5">
+        </div>
+      </fieldset>
+      <button type="button" class="ghost" id="resetBtn">기본값으로 되돌리기</button>
+    </form>
+
+    <div class="results">
+      <section class="panel" aria-live="polite">
+        <div class="hero">
+          <div class="big" id="bigPct">–</div>
+          <div class="hero-meta">
+            <div class="verdict" id="verdict"></div>
+            <div class="chips" id="targets"></div>
+            <div class="chips" id="chips"></div>
+            <div class="warn" id="warn" hidden></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2 id="distTitle">추출 후 직접 못 뽑고 남는 목표 개수</h2>
+        <div class="dist" id="dist"></div>
+        <div class="legend"><span><i class="sw" style="background:var(--accent)"></i>천장으로 메울 수 있음</span><span><i class="sw" style="background:var(--faint);opacity:.55"></i>부족</span></div>
+      </section>
+
+      <section class="panel">
+        <h2>추출 수별 성공 확률</h2>
+        <div class="chart-box" id="chartBox">
+          <svg class="curve" id="curve" viewBox="0 0 640 300" role="img" aria-label="추출 수에 따른 성공 확률 곡선"></svg>
+          <div class="tip" id="tip" hidden></div>
+        </div>
+        <div class="legend"><span><i class="sw" style="background:var(--accent)"></i>성공 확률</span><span><i class="sw" style="background:var(--gold)"></i>천장 1회 추가 시점</span></div>
+      </section>
+
+      <section class="panel">
+        <h2>확률별 필요 연차</h2>
+        <div class="tablewrap"><table class="reach" id="reach"></table></div>
+      </section>
+
+      <section class="panel">
+        <div class="simhead">
+          <h2 id="simTitle">한 번 돌려보기</h2>
+          <button type="button" class="btn" id="simBtn">돌리기</button>
+        </div>
+        <div class="simres" id="sim"><p class="empty">버튼을 누르면 지금 조건으로 한 번 뽑아 보고, 목표를 채우는 순간 멈춰서 남은 광기를 보여줘요.</p></div>
+      </section>
+
+      <section class="notes">
+        계산 기준
+        <ul>
+          <li>픽업 3성 인격 합계 1.45%를 픽업 인격 수로 똑같이 나눔. 모든 E.G.O를 가지면 3성 3.0%, 픽업 합계 1.5%로 오른다고 가정</li>
+          <li>E.G.O 칸 1.3%: 기존 E.G.O가 남아 있으면 픽업 0.65% + 기존 0.65%, 기존을 다 모으면 픽업 1.3%. 픽업 몫은 아직 없는 픽업 E.G.O끼리 나누고, 픽업 E.G.O를 다 얻으면 1.3%가 남은 기존 E.G.O로 감</li>
+          <li>이상성 200마다 원하는 픽업 1개 교환. 10연 확정은 1성을 2성으로 바꿀 뿐이라 3성·E.G.O 확률에는 영향 없음</li>
+          <li>인게임 확률표와 다를 수 있으니 배너가 열리면 확률 정보에서 개별 수치를 한 번 확인해 주세요</li>
+        </ul>
+      </section>
+    </div>
+  </div>
+  <footer>팬이 만든 비공식 계산기예요. Limbus Company와 관련 이름은 Project Moon의 것입니다. · <a href="https://github.com/Jongmin-Lee-DEV/limbus-pity-calculator">소스 코드</a></footer>
+</div>
+
+<script src="src/calc.js"></script>
+<script src="src/ui.js"></script>
+</body>
+</html>
